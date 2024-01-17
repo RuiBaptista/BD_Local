@@ -14,11 +14,11 @@ public class Registar : MonoBehaviour
     //btnSubmeter
     public Button btnSubmeter;
 
-    public void GuardarDados()
+    public void GuardarDadosJson()
     {
         GestorPrograma.Instancia.Utilizador = nomeUtilizador.text;
         GestorPrograma.Instancia.Pontuacao = 0;
-        GestorPrograma.Instancia.Password = GerarPassword.Hash(passwordUtilizador.text);
+        //GestorPrograma.Instancia.Password = GerarPassword.Hash(passwordUtilizador.text);
         //inicia uma Corotina chamada Regista 
         GestorPrograma.Instancia.GuardarDadosUtilizador();
 
@@ -26,8 +26,34 @@ public class Registar : MonoBehaviour
         //Carregar Menu Principal 
         MenuPrincipal();
     }
+	
+	 //Criar utilizador
+    public void Submeter()
+    {
+        if (pass.text == confpass.text)
+        {
+            if (bd.VerificarSeExiste(nomeUtil.text) == true)
+            {
+                erro.text = "Nome de Utilizador já existe";
+            }
+            else
+            {
+                if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text))
+                {
+                    SceneManager.LoadScene(3);
+                }
+                else
+                {
+                    erro.text = "Não foi possível criar o utilizador";
+                }
+            }
+        }
+        else
+        {
+            erro.text = "Pass e confirmação não são iguas";
+        }
+    }
   
-    
     public void VerificarInputs()
     {
         //verificar se campos nome e password foram prenchidos com 8 ou mais caracteres
