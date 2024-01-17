@@ -6,7 +6,8 @@ using System.IO;
 
 public class GestorPrograma : MonoBehaviour
 {
-
+    //Acesso BD
+    BD bd = new BD();
     public static GestorPrograma Instancia { get; private set; }
 
     private string utilizador;
@@ -98,6 +99,11 @@ public class GestorPrograma : MonoBehaviour
             utilizador = data.utilizador;
             pontuacao = data.pontuacao;
         }
+    }
+
+    public void CarregarDadosInstancia()
+    {
+        bd.DadosJogo(utilizador);
     }
 
 }

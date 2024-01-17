@@ -234,10 +234,6 @@ public class BD
 
     public bool DadosJogo(string nomeUtil)
     {
-
-            string corbd;
-            Color cor = new Color();
-            Vector3 posicao = new Vector3();
         try
         {
             Ligacao();
@@ -251,20 +247,6 @@ public class BD
 
             reader = cmnd.ExecuteReader();
 
-
-            while (reader.Read())
-            {
-                //Carregar posição
-                posicao = StringToVector3(reader[0].ToString());
-                GestorDoPrograma.Instancia.LocalizacaoUnit = posicao;
-
-                //Carragar a cor
-                corbd = "#"+reader[1].ToString();
-               if (ColorUtility.TryParseHtmlString(corbd, out cor))
-                {
-                    GestorDoPrograma.Instancia.corMontacargas = cor;
-                }
-            }
             FecharLigacao();
             return true;
         }

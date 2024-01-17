@@ -9,14 +9,19 @@ using UnityEngine.SceneManagement;
 public class Registar : MonoBehaviour
 {
     //variáveis necessárias para guardar o nome e pass do utilizador
-    public InputField nomeUtilizador;
-    public InputField passwordUtilizador;
+    [SerializeField]
+    private InputField nome, nomeUtil, email, pass, confpass;
     //btnSubmeter
     public Button btnSubmeter;
+    //Label erros
+    [SerializeField]
+    private Text erro;
+
+    BD bd = new BD();
 
     public void GuardarDadosJson()
     {
-        GestorPrograma.Instancia.Utilizador = nomeUtilizador.text;
+        GestorPrograma.Instancia.Utilizador = nome.text;
         GestorPrograma.Instancia.Pontuacao = 0;
         //GestorPrograma.Instancia.Password = GerarPassword.Hash(passwordUtilizador.text);
         //inicia uma Corotina chamada Regista 
@@ -24,14 +29,17 @@ public class Registar : MonoBehaviour
 
 
         //Carregar Menu Principal 
-        MenuPrincipal();
+        //MenuPrincipal();
     }
-	
-	 //Criar utilizador
+
+    //Criar utilizador
     public void Submeter()
     {
         if (pass.text == confpass.text)
         {
+            //Veridicar se BD Existe e se não criar BD
+            bd.Criar();
+
             if (bd.VerificarSeExiste(nomeUtil.text) == true)
             {
                 erro.text = "Nome de Utilizador já existe";
@@ -40,7 +48,7 @@ public class Registar : MonoBehaviour
             {
                 if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text))
                 {
-                    SceneManager.LoadScene(3);
+                    MenuPrincipal();
                 }
                 else
                 {
@@ -53,12 +61,12 @@ public class Registar : MonoBehaviour
             erro.text = "Pass e confirmação não são iguas";
         }
     }
-  
+
     public void VerificarInputs()
     {
         //verificar se campos nome e password foram prenchidos com 8 ou mais caracteres
         //Permitir clicar no botão btnSubmeter apenas se a seguinte condição se verificar:
-        btnSubmeter.interactable = (nomeUtilizador.text.Length >= 3 && passwordUtilizador.text.Length >= 8);
+        btnSubmeter.interactable = (nome.text.Length >= 3 && pass.text.Length >= 8 && confpass.text.Length >= 8);
 
     }
 
