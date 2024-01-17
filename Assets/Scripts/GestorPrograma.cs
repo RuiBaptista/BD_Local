@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class GestorPrograma : MonoBehaviour
 {
@@ -12,6 +14,14 @@ public class GestorPrograma : MonoBehaviour
         get { return utilizador; }
         set { utilizador = value; }
     }
+
+    private string password;
+    public string Password
+    {
+        get { return password; }
+        set { password = value; }
+    }
+
     private int pontuacao;
     public int Pontuacao
     {
@@ -51,6 +61,43 @@ public class GestorPrograma : MonoBehaviour
         //Método que informa a aplicação para não destruir o objeto marcado quando é carregada uma cena.
         DontDestroyOnLoad(gameObject);
 
+    }
+
+    //Se não é necessário guardar todos os dados de uma class então podemos criar uma class para lidar apenas com os dados que precisamos:
+    [Serializable]
+    public class GuardarDados
+    {
+        public string utilizador;
+        public string password;
+        public int pontuacao;
+    }
+
+    public void GuardarDadosUtilizador()
+    {
+        //Criar uma nova instância da class GuardarDados
+        GuardarDados dados = new GuardarDados();
+        //Atribuição do valor a armazenar ao membro da class CorMontacargas 
+        dados.utilizador = utilizador;
+        dados.password = password;
+        dados.pontuacao= pontuacao; 
+        //tranformar a instância em JSON
+        string json = JsonUtility.ToJson(dados);
+        //escrever dados para um ficheiro
+        File.WriteAllText(Application.persistentDataPath + "/guardardados.json", json);
+        Debug.Log(Application.persistentDataPath);
+    }
+
+    public void CarregarDadosUtilizador()
+    {
+        string path = Application.persistentDataPath + "/guardardados.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            GuardarDados data = JsonUtility.FromJson<GuardarDados>(json);
+
+            utilizador = data.utilizador;
+            pontuacao = data.pontuacao;
+        }
     }
 
 }
