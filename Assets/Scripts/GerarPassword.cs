@@ -4,8 +4,21 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEditor.ShaderData;
 public class GerarPassword : MonoBehaviour
 {
+
+    public static string GerarPass(string pass)
+    {
+        string passUser;
+
+            string salt = "1234edfdsaw";
+            passUser = ComputeHash(pass, salt);
+            Debug.Log("Pass gerada: " + passUser);
+            return passUser;
+
+    }
     public static string ComputeHash(string passwordPlainText, string saltString)
     {
 

@@ -67,22 +67,8 @@ public class BD
     public bool CriarUtilizador(string nome, string nomeUtil, string email, string pass)
     {
         bool valida = false;
-        string passUser;
 
-        try
-        {
-
-            string salt = "1234edfdsaw";
-            passUser = GerarPassword.ComputeHash(pass, salt);
-            Debug.Log("Pass gerada: " + passUser);
-
-        }
-        catch (Exception erroSelect)
-        {
-            Debug.Log(erroSelect);
-            return valida;
-        }
-
+       
         try
         {
             Ligacao();
@@ -96,7 +82,7 @@ public class BD
             cmnd.Parameters.Add(new SqliteParameter("@nome", nome));
             cmnd.Parameters.Add(new SqliteParameter("@nomeUtil", nomeUtil));
             cmnd.Parameters.Add(new SqliteParameter("@email", email));
-            cmnd.Parameters.Add(new SqliteParameter("@pass", passUser));
+            cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass)));
 
             cmnd.ExecuteNonQuery();
 
@@ -177,7 +163,7 @@ public class BD
             string query = " SELECT nomeutil, pass FROM jogador WHERE nomeutil LIKE @nomeUtil AND pass LIKE @pass ";
             //Passar parametros
             cmnd.Parameters.Add(new SqliteParameter("@nomeUtil", nomeUtil));
-            cmnd.Parameters.Add(new SqliteParameter("@pass", pass));
+            cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass)));
             cmnd.CommandText = query;
 
             reader = cmnd.ExecuteReader();
