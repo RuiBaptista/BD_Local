@@ -85,7 +85,7 @@ public class GestorPrograma : MonoBehaviour
         string json = JsonUtility.ToJson(dados);
         //escrever dados para um ficheiro
         File.WriteAllText(Application.persistentDataPath + "/guardardados.json", json);
-        Debug.Log(Application.persistentDataPath);
+        Debug.Log("Caminho para o ficheito: " + Application.persistentDataPath);
     }
 
     public void CarregarDadosUtilizador()
@@ -97,6 +97,7 @@ public class GestorPrograma : MonoBehaviour
             GuardarDados data = JsonUtility.FromJson<GuardarDados>(json);
 
             utilizador = data.utilizador;
+            password= data.password;
             pontuacao = data.pontuacao;
         }
     }

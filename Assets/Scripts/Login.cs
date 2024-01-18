@@ -24,7 +24,10 @@ public class Login : MonoBehaviour
         if (bd.IniciarSessao(nomeUser.text, pass.text) == true && nomeUser.text != "" && pass.text != "")
         {
             GestorPrograma.Instancia.Utilizador = nomeUser.text;
+            //Carregar dados instancia
             GestorPrograma.Instancia.CarregarDadosInstancia();
+            //Carregar dados Jason
+            //GestorPrograma.Instancia.CarregarDadosUtilizador();
             SceneManager.LoadScene(0);
         }
         else

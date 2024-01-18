@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using static GestorPrograma;
 using UnityEngine.SceneManagement;
 
 public class Registar : MonoBehaviour
@@ -21,8 +20,12 @@ public class Registar : MonoBehaviour
 
     public void GuardarDadosJson()
     {
+        //Guardar dados da instância
         GestorPrograma.Instancia.Utilizador = nome.text;
         GestorPrograma.Instancia.Pontuacao = 0;
+        GestorPrograma.Instancia.Password = GerarPassword.GerarPass(pass.text);
+
+       //continuar aqui a guardar dados se necessário...
     
         //inicia uma Corotina chamada Regista 
         GestorPrograma.Instancia.GuardarDadosUtilizador();
@@ -48,6 +51,8 @@ public class Registar : MonoBehaviour
             {
                 if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text))
                 {
+                    //Guardar dos jason
+                    //GuardarDadosJson();
                     MenuPrincipal();
                 }
                 else
