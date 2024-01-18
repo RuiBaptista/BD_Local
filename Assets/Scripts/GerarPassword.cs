@@ -8,15 +8,29 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 using static UnityEditor.ShaderData;
 public class GerarPassword : MonoBehaviour
 {
+    //Gerar Salt
+    public static string Salt()
+    {
+        var random = new RNGCryptoServiceProvider();
 
-    public static string GerarPass(string pass)
+        // Maximum length of salt
+        int max_length = 32;
+
+        // Empty salt array
+        byte[] salt = new byte[max_length];
+
+        // Build the random bytes
+        random.GetNonZeroBytes(salt);
+
+        // Return the string encoded salt
+        return Convert.ToBase64String(salt);
+    }
+    public static string GerarPass(string pass, string salt)
     {
         string passUser;
-
-            string salt = "1234edfdsaw";
-            passUser = ComputeHash(pass, salt);
-            Debug.Log("Pass gerada: " + passUser);
-            return passUser;
+        passUser = ComputeHash(pass, salt);
+        Debug.Log("Pass gerada: " + passUser + "Salt Gerado: " + salt);
+        return passUser;
 
     }
     public static string ComputeHash(string passwordPlainText, string saltString)

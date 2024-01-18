@@ -23,7 +23,7 @@ public class Registar : MonoBehaviour
         //Guardar dados da instância
         GestorPrograma.Instancia.Utilizador = nome.text;
         GestorPrograma.Instancia.Pontuacao = 0;
-        GestorPrograma.Instancia.Password = GerarPassword.GerarPass(pass.text);
+        GestorPrograma.Instancia.Password = GerarPassword.GerarPass(pass.text, GerarPassword.Salt());
 
        //continuar aqui a guardar dados se necessário...
     

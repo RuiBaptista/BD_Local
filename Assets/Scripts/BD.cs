@@ -6,6 +6,8 @@ using System.Globalization;
 //Utilização do Namespace acesso BD
 using System.Data;
 using Mono.Data.Sqlite;
+using System.Security.Cryptography.X509Certificates;
+using static UnityEditor.ShaderData;
 
 public class BD
 {
@@ -35,7 +37,8 @@ public class BD
                                         " nome VARCHAR(30)," +
                                         " nomeUtil VARCHAR(10) NOT NULL," +
                                         " email VARCHAR(50) NOT NULL," +
-                                        " pass VARCHAR(50) NOT NULL);" +
+                                        " pass VARCHAR(50) NOT NULL," +
+                                        " salt VARCHAR(50) NOT NULL);" +
                                     " CREATE TABLE IF NOT EXISTS dados_jogo (" +
                                         " id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                                         " nomeUtil VARCHAR(10) NOT NULL," +
@@ -67,22 +70,24 @@ public class BD
     public bool CriarUtilizador(string nome, string nomeUtil, string email, string pass)
     {
         bool valida = false;
-
+        string salt = GerarPassword.Salt();
        
         try
         {
             Ligacao();
 
             IDbCommand cmnd = ligacaoBD.CreateCommand();
-            cmnd.CommandText = "INSERT INTO jogador (nome, nomeutil, email, pass) " +
-                                    "VALUES (@nome, @nomeUtil, @email, @pass);" +
+            cmnd.CommandText = "INSERT INTO jogador (nome, nomeutil, email, pass, salt) " +
+                                    "VALUES (@nome, @nomeUtil, @email, @pass, @salt);" +
                                 "INSERT INTO dados_jogo (nomeutil, unidlocalizacao, unidCor) " +
                                     "VALUES (@nomeUtil, '', '');";
+
             //Passar parametros
             cmnd.Parameters.Add(new SqliteParameter("@nome", nome));
             cmnd.Parameters.Add(new SqliteParameter("@nomeUtil", nomeUtil));
             cmnd.Parameters.Add(new SqliteParameter("@email", email));
-            cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass)));
+            cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass, salt)));
+            cmnd.Parameters.Add(new SqliteParameter("@salt", salt));
 
             cmnd.ExecuteNonQuery();
 
@@ -103,6 +108,7 @@ public class BD
                     Debug.Log("nomeUtil: " + reader[2].ToString());
                     Debug.Log("email: " + reader[3].ToString());
                     Debug.Log("pass: " + reader[4].ToString());
+                    Debug.Log("salt: " + reader[5].ToString());
                 }
             }
             //Fechar ligação
@@ -150,41 +156,70 @@ public class BD
         }
     }
 
-    public bool IniciarSessao(string nomeUtil, string pass )
+    public string GetSalt(string nomeUtil)
     {
-          
+        string salt = "";
+
         try
         {
-            int registos = 0;
             Ligacao();
             IDbCommand cmnd = ligacaoBD.CreateCommand();
 
             IDataReader reader;
-            string query = " SELECT nomeutil, pass FROM jogador WHERE nomeutil LIKE @nomeUtil AND pass LIKE @pass ";
+            string query = " SELECT salt FROM jogador WHERE nomeutil LIKE @nomeUtil";
             //Passar parametros
             cmnd.Parameters.Add(new SqliteParameter("@nomeUtil", nomeUtil));
-            cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass)));
             cmnd.CommandText = query;
 
             reader = cmnd.ExecuteReader();
 
             while (reader.Read())
             {
-                registos++;
+                salt = reader[0].ToString();
+            }
+
+            return salt;
+        }
+        catch (Exception erroSelect)
+        {
+            Debug.Log(erroSelect);
+            return "";
+        }
+    }
+
+    public bool IniciarSessao(string nomeUtil, string pass )
+    {
+        try
+        {
+            Ligacao();
+            IDbCommand cmnd = ligacaoBD.CreateCommand();
+
+            IDataReader reader;
+            string query = " SELECT nomeutil, pass FROM jogador WHERE nomeutil LIKE @nomeUtil AND pass LIKE @pass";
+            //Passar parametros
+            cmnd.Parameters.Add(new SqliteParameter("@nomeUtil", nomeUtil));
+            cmnd.Parameters.Add(new SqliteParameter("@pass", pass));
+            cmnd.CommandText = query;
+
+            reader = cmnd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string userNome = reader[0].ToString(); 
+                string userPass = reader[1].ToString();
+                if (nomeUtil == userNome && pass == userPass)
+                {
+                    Debug.Log("Pode iniciar sessão");
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             FecharLigacao();
-
-            if (registos == 1)
-            {
-                return true;
-
-            }
-            else
-            {
-                return false;
-            }
-
+            return false;
         }
         catch (Exception erroSelect)
         {

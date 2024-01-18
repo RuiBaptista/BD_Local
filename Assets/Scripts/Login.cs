@@ -21,7 +21,7 @@ public class Login : MonoBehaviour
     public void Submeter()
     {
 
-        if (bd.IniciarSessao(nomeUser.text, pass.text) == true && nomeUser.text != "" && pass.text != "")
+        if (bd.IniciarSessao(nomeUser.text, GerarPassword.GerarPass(pass.text, bd.GetSalt(nomeUser.text))) == true && nomeUser.text != "" && pass.text != "")
         {
             GestorPrograma.Instancia.Utilizador = nomeUser.text;
             //Carregar dados instancia
