@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Registar : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class Registar : MonoBehaviour
     //Label erros
     [SerializeField]
     private Text erro;
+
+
 
     BD bd = new BD();
 
@@ -38,6 +41,10 @@ public class Registar : MonoBehaviour
     //Criar utilizador
     public void Submeter()
     {
+        int pontuacao = 0;
+        DateTime datatime = DateTime.Now;
+        string formatarData = datatime.ToString("yyyy-MM-dd HH:mm:ss");
+
         if (pass.text == confpass.text)
         {
             //Veridicar se BD Existe e se não criar BD
@@ -49,7 +56,7 @@ public class Registar : MonoBehaviour
             }
             else
             {
-                if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text))
+                if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text, pontuacao, formatarData))
                 {
                     //Guardar dos jason
                     //GuardarDadosJson();

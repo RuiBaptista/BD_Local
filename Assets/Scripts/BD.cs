@@ -37,13 +37,14 @@ public class BD
                                         " nome VARCHAR(30)," +
                                         " nomeUtil VARCHAR(10) NOT NULL," +
                                         " email VARCHAR(50) NOT NULL," +
-                                        " pass VARCHAR(50) NOT NULL," +
-                                        " salt VARCHAR(50) NOT NULL);" +
+                                        " pass VARCHAR(256) NOT NULL," +
+                                        " salt VARCHAR(100) NOT NULL);" +
                                     " CREATE TABLE IF NOT EXISTS dados_jogo (" +
                                         " id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                                         " nomeUtil VARCHAR(10) NOT NULL," +
-                                        " unidlocalizacao VARCHAR(20) NOT NULL," +
-                                        " unidCor VARCHAR(40) NOT NULL );";
+                                        " pontuacao INT NOT NULL," +
+                                        " datahora VARCHAR(20) NOT NULL );";
+
             //Criar tabelas
             dbcmd.CommandText = q_CriarTabelas;
             dbcmd.ExecuteReader();
@@ -67,11 +68,12 @@ public class BD
         ligacaoBD.Close();
     }
 
-    public bool CriarUtilizador(string nome, string nomeUtil, string email, string pass)
+    public bool CriarUtilizador(string nome, string nomeUtil, string email, string pass, int pontuacao, string formatarData)
     {
         bool valida = false;
         string salt = GerarPassword.Salt();
        
+
         try
         {
             Ligacao();
@@ -79,8 +81,9 @@ public class BD
             IDbCommand cmnd = ligacaoBD.CreateCommand();
             cmnd.CommandText = "INSERT INTO jogador (nome, nomeutil, email, pass, salt) " +
                                     "VALUES (@nome, @nomeUtil, @email, @pass, @salt);" +
-                                "INSERT INTO dados_jogo (nomeutil, unidlocalizacao, unidCor) " +
-                                    "VALUES (@nomeUtil, '', '');";
+                                "INSERT INTO dados_jogo (nomeutil, pontuacao, datahora) " +
+                                    "VALUES (@nomeUtil, @pontuacao, @datatime);";
+
 
             //Passar parametros
             cmnd.Parameters.Add(new SqliteParameter("@nome", nome));
@@ -88,6 +91,10 @@ public class BD
             cmnd.Parameters.Add(new SqliteParameter("@email", email));
             cmnd.Parameters.Add(new SqliteParameter("@pass", GerarPassword.GerarPass(pass, salt)));
             cmnd.Parameters.Add(new SqliteParameter("@salt", salt));
+            cmnd.Parameters.Add(new SqliteParameter("@pontuacao", pontuacao));
+            cmnd.Parameters.Add(new SqliteParameter("@datatime", formatarData));
+
+
 
             cmnd.ExecuteNonQuery();
 
