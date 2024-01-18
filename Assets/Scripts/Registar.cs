@@ -23,7 +23,7 @@ public class Registar : MonoBehaviour
     {
         GestorPrograma.Instancia.Utilizador = nome.text;
         GestorPrograma.Instancia.Pontuacao = 0;
-        //GestorPrograma.Instancia.Password = GerarPassword.Hash(passwordUtilizador.text);
+    
         //inicia uma Corotina chamada Regista 
         GestorPrograma.Instancia.GuardarDadosUtilizador();
 
