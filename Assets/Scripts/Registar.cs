@@ -30,7 +30,7 @@ public class Registar : MonoBehaviour
 
        //continuar aqui a guardar dados se necessário...
     
-        //inicia uma Corotina chamada Regista 
+        //inicia uma Corotina Registar
         GestorPrograma.Instancia.GuardarDadosUtilizador();
 
 
@@ -59,7 +59,8 @@ public class Registar : MonoBehaviour
                 if (bd.CriarUtilizador(nome.text, nomeUtil.text, email.text, pass.text, pontuacao, formatarData))
                 {
                     //Guardar dos jason
-                    //GuardarDadosJson();
+                    GuardarDadosJson();
+                    //Carregar Menu Principal
                     MenuPrincipal();
                 }
                 else

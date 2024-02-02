@@ -27,7 +27,7 @@ public class Login : MonoBehaviour
             //Carregar dados instancia
             GestorPrograma.Instancia.CarregarDadosInstancia();
             //Carregar dados Jason
-            //GestorPrograma.Instancia.CarregarDadosUtilizador();
+            GestorPrograma.Instancia.CarregarDadosUtilizador();
             SceneManager.LoadScene(0);
         }
         else
